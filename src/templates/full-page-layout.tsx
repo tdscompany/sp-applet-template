@@ -31,7 +31,7 @@ export const FullPageLayout = ({ children }: Props): JSX.Element => {
     >
       <Box w='full' display='flex' alignItems='center' justifyContent='center' as="header" pb={[3, 7]}>
         <Box _focus={{ outline: 'none' }}>
-          <Image src={StrateegiaLogo} alt="Strateegia" width={200} height={200} layout="fixed" />
+          <Image src={StrateegiaLogo} alt="Strateegia" width={200} height={200} />
         </Box>
       </Box>
 
