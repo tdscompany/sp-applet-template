@@ -40,7 +40,7 @@ export const FullPageLayout = ({ children }: Props): JSX.Element => {
 
         <Flex as="footer" justify="end" align="center" px={[6, 7]} maxW={{ base: '100%' }}>
           <Text fontSize="xs" color="gray.300">
-            © 2023 - tds.company todos os direitos reservados
+            © 2024 - tds.company todos os direitos reservados
           </Text>
         </Flex>
       </Container>

@@ -13,7 +13,8 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <Heading>Super ponto de partida</Heading>
+      <Heading>Applet template</Heading>
+
       <Button onClick={handleLogout} colorScheme='pink'>sair</Button>
     </>
   );
