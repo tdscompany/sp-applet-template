@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { CustomInput } from '@/components/custom-input';
 import { useState } from 'react';
 import { auth } from '@/services/auth';
-import { persistTerms } from '@/config/persistTerms';
 import { getMe } from '@/services/user';
 
 const fonts = Montserrat({
@@ -43,8 +42,6 @@ export default function Home() {
       });
       const user = await getMe();
 
-      persistTerms.set(user.term_accepted)
-
       setIsLoading(false);
       router.push('/dashboard');
     } catch (err) {
@@ -61,7 +58,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Super Ponto de Partida</title>
+        <title>Applet template</title>
         <meta name="description" content="Crie pontos de partida com conteúdos de referência" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
