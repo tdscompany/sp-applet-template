@@ -22,7 +22,6 @@ export const auth = async ({
   })
     .then((res) => {
       const token = jwtDecode<{ exp: number }>(res.data.access_token);
-      console.log("token", token);
       sessionManager.startSession(
         keepConnected,
         token.exp,

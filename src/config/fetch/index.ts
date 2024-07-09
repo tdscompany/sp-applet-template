@@ -43,7 +43,6 @@ httpClient.interceptors.request.use(async (request) => {
 
   const session = sessionManager.getSession();
   const accessToken = session?.token;
-  console.log("accessToken", accessToken);
 
   if (accessToken) {
     request.headers.Authorization = `Bearer ${accessToken}`;
