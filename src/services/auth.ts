@@ -23,10 +23,12 @@ export const auth = async ({
     .then((res) => {
       const token = jwtDecode<{ exp: number }>(res.data.access_token);
       console.log("token", token);
-      sessionManager.startSession(keepConnected, token.exp);
+      sessionManager.startSession(
+        keepConnected,
+        token.exp,
+        res.data.access_token
+      );
 
-      // save token in local storage
-      localStorage.setItem("access_token", res.data.access_token);
       return res.data;
     })
     .catch(() => {
@@ -35,10 +37,21 @@ export const auth = async ({
 };
 
 export const logout = async () => {
-  return fetch({
-    url: "/users/v1/auth/logout",
-    method: "POST",
-  }).then(() => {
+  const session = sessionManager.getSession();
+  const accessToken = session?.token;
+
+  if (accessToken) {
+    return await fetch({
+      url: "/users/v1/auth/logout",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(() => {
+      sessionManager.endSession();
+    });
+  } else {
+    // If no token is found, end the session directly
     sessionManager.endSession();
-  });
+  }
 };

@@ -1,15 +1,15 @@
 const key = "session";
 
 export const sessionManager = (() => {
-  let value: number | null = null;
+  let value: { exp: number; token: string } | null = null;
 
-  const _getLocalSession = (): number | null => {
+  const _getLocalSession = (): { exp: number; token: string } | null => {
     const sessionData = sessionStorage.getItem(key);
     const localData = localStorage.getItem(key);
     const sessionString = sessionData || localData;
 
     if (sessionString) {
-      return parseInt(sessionString);
+      return JSON.parse(sessionString);
     }
 
     return null;
@@ -31,13 +31,13 @@ export const sessionManager = (() => {
     value = null;
   };
 
-  const startSession = (keepConnected = false, exp: number) => {
+  const startSession = (keepConnected = false, exp: number, token: string) => {
     _clear();
-    value = exp;
+    value = { exp, token };
     if (keepConnected) {
-      localStorage.setItem(key, exp.toString());
+      localStorage.setItem(key, JSON.stringify({ exp, token }));
     }
-    sessionStorage.setItem(key, exp.toString());
+    sessionStorage.setItem(key, JSON.stringify({ exp, token }));
   };
 
   const endSession = () => {
@@ -46,18 +46,16 @@ export const sessionManager = (() => {
 
   const hasSession = () => {
     const session = getSession();
-
     return !!session;
   };
 
   const isExpired = () => {
-    const exp = getSession();
-    if (!exp) {
+    const session = getSession();
+    if (!session) {
       return true;
     }
 
-    const { isValid } = validateExpiration(exp);
-
+    const { isValid } = validateExpiration(session.exp);
     return !isValid;
   };
 
@@ -66,9 +64,9 @@ export const sessionManager = (() => {
     return { isValid };
   };
 
-  const updateSession = (exp: number) => {
+  const updateSession = (exp: number, token: string) => {
     const keepConnected = !!localStorage.getItem(key);
-    startSession(keepConnected, exp);
+    startSession(keepConnected, exp, token);
   };
 
   return {
