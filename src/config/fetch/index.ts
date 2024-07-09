@@ -42,6 +42,7 @@ httpClient.interceptors.request.use(async (request) => {
     await updateToken();
   }
 
+  // this is temporary solution because the token is not being set by the backend the cookie is set to SameSite=Strict
   const accessToken = localStorage.getItem("access_token");
 
   request.headers.Authorization = `Bearer ${accessToken ?? ""}`;
