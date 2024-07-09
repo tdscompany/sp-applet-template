@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { sessionManager } from "@/config/session-manager";
 import jwtDecode from "jwt-decode";
 
-export const baseURL = "https://api.dev.strateegia.digital";
+export const baseURL = "https://api.strateegia.digital";
 
 const httpClient = axios.create({
   baseURL,
@@ -31,9 +31,20 @@ httpClient.interceptors.request.use(async (request) => {
     return request;
   }
 
+  if (!sessionManager.hasSession()) {
+    const previousURL = window.location.pathname;
+    sessionStorage.setItem("previousURL", previousURL);
+
+    window.location.replace(`/login`);
+  }
+
   if (sessionManager.isExpired()) {
     await updateToken();
   }
+
+  const accessToken = localStorage.getItem("access_token");
+
+  request.headers.Authorization = `Bearer ${accessToken ?? ""}`;
 
   return request;
 });

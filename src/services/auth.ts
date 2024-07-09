@@ -1,14 +1,17 @@
-import fetch from '@/config/fetch'
-import { sessionManager } from '@/config/session-manager'
-import { InvalidCredentialsError } from '@/errors/invalid-credentials-error'
-import { AuthenticationParams, TokenModel } from '@/types/auth-model'
-import jwtDecode from 'jwt-decode'
+import fetch from "@/config/fetch";
+import { sessionManager } from "@/config/session-manager";
+import { InvalidCredentialsError } from "@/errors/invalid-credentials-error";
+import { AuthenticationParams, TokenModel } from "@/types/auth-model";
+import jwtDecode from "jwt-decode";
 
-
-export const auth = async ({ email, password, keepConnected = false }: AuthenticationParams) => {
+export const auth = async ({
+  email,
+  password,
+  keepConnected = false,
+}: AuthenticationParams) => {
   return fetch<TokenModel>({
-    url: '/users/v1/auth/signin',
-    method: 'POST',
+    url: "/users/v1/auth/signin",
+    method: "POST",
     auth: {
       username: email,
       password,
@@ -18,20 +21,24 @@ export const auth = async ({ email, password, keepConnected = false }: Authentic
     },
   })
     .then((res) => {
-      const token = jwtDecode<{ exp: number }>(res.data.access_token)
-      sessionManager.startSession(keepConnected, token.exp)
-      return res.data
+      const token = jwtDecode<{ exp: number }>(res.data.access_token);
+      console.log("token", token);
+      sessionManager.startSession(keepConnected, token.exp);
+
+      // save token in local storage
+      localStorage.setItem("access_token", res.data.access_token);
+      return res.data;
     })
     .catch(() => {
-      throw new InvalidCredentialsError()
-    })
-}
+      throw new InvalidCredentialsError();
+    });
+};
 
 export const logout = async () => {
   return fetch({
-    url: '/users/v1/auth/logout',
-    method: 'POST',
+    url: "/users/v1/auth/logout",
+    method: "POST",
   }).then(() => {
-    sessionManager.endSession()
-  })
-}
+    sessionManager.endSession();
+  });
+};
